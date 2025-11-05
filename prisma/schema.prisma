@@ -1,0 +1,66 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Property {
+  id           String          @id @default(cuid())
+  name         String
+  type         String
+  city         String
+  region       String
+  address      String
+  price        Float
+  rentalType   String
+  rating       Float
+  reviews      Int
+  image        String
+  description  String
+  bedrooms     Int
+  bathrooms    Int
+  amenities    String
+  images       PropertyImage[]
+  reservations Reservation[] // ✅ <— ajout de cette ligne
+  createdAt    DateTime        @default(now())
+  featured     Boolean         @default(false) // ✅ ajouté ici
+}
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+}
+
+model PropertyImage {
+  id         String   @id @default(cuid())
+  url        String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+}
+
+model Reservation {
+  id            String    @id @default(cuid())
+  property      Property  @relation(fields: [propertyId], references: [id])
+  propertyId    String
+  name          String
+  prenom        String
+  age           Int?
+  city          String?
+  phone         String
+  maritalStatus String?
+  profession    String?
+  income        Float?
+  leaseDuration String?
+  occupants     Int?
+  visitDate     DateTime?
+  arrivalDate   DateTime
+  departureDate DateTime
+  totalPrice    Float
+  createdAt     DateTime  @default(now())
+}
