@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
     "dev": "next dev",
-    "lint": "eslint .",
-    "start": "next start"
+    "build": "next build",
+    "start": "next start -p $PORT",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -82,5 +82,8 @@
     "tsconfig-paths": "^4.2.0",
     "tw-animate-css": "1.3.3",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
