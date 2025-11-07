@@ -38,7 +38,7 @@ export default function ContactPage() {
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <Mail className="text-primary mb-4" size={32} />
             <h3 className="font-semibold text-lg text-foreground mb-2">Email</h3>
-            <p className="text-foreground-secondary">contact@tropicallocation.fr</p>
+            <p className="text-foreground-secondary">info@tropical-location.goutsky.com</p>
           </div>
 
           <div className="bg-white rounded-lg p-6 shadow-sm">

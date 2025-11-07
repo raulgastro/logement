@@ -59,7 +59,7 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold mb-4">Contact</h3>
             <ul className="space-y-2 text-white/70">
-              <li>Email: info@tropicallocation.com</li>
+              <li>Email: info@tropical-location.goutsky.com</li>
               <li>Tél: +33 (0)1 23 45 67 89</li>
             </ul>
           </div>

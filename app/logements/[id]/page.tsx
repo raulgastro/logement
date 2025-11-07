@@ -112,7 +112,12 @@ export default function PropertyDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reservationData),
       });
-
+     // ✅ 2. Notification Formspree
+  await fetch("https://formspree.io/f/xzzypbqv", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(reservationData),
+  });
       if (res.ok) {
         setMessage({ type: "success", text: "✅ Réservation enregistrée avec succès !" });
         setFormData({
