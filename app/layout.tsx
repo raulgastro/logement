@@ -11,7 +11,9 @@ const geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "TropicalLocation - Vacation Rentals",
   description: "Book your perfect vacation rental across French territories",
-    generator: 'v0.app'
+  icons: {
+    icon: "/favicon.ico", // ou /favicon.png
+  },
 }
 
 export default function RootLayout({
