@@ -33,7 +33,6 @@ export default function ListingsPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
 
-  // 🔹 Charger les logements depuis ton API
   useEffect(() => {
     async function fetchProperties() {
       try {
@@ -47,7 +46,6 @@ export default function ListingsPage() {
     fetchProperties()
   }, [])
 
-  // 🔹 Filtres dynamiques
   const filteredListings = useMemo(() => {
     return properties.filter((listing) => {
       const matchesDestination =
@@ -83,18 +81,44 @@ export default function ListingsPage() {
     <div className="min-h-screen bg-surface">
       {/* Header */}
       <div className="bg-white border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Nos Logements</h1>
-          <p className="text-foreground-secondary">
-            {filteredListings.length} logement{filteredListings.length !== 1 ? "s" : ""} disponible
-            {filteredListings.length !== 1 ? "s" : ""}
-          </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Nos Logements</h1>
+            <p className="text-foreground-secondary">
+              {filteredListings.length} logement{filteredListings.length !== 1 ? "s" : ""} disponible
+              {filteredListings.length !== 1 ? "s" : ""}
+            </p>
+          </div>
+
+          {/* 🔹 Bouton Filtres visible seulement sur mobile */}
+          <div className="block lg:hidden">
+            <Button onClick={() => setShowFilters(true)} variant="outline" size="sm" className="flex items-center gap-2">
+              <Filter size={18} /> Filtres
+            </Button>
+          </div>
         </div>
       </div>
+      {/* 🔹 Panneau mobile avec animation et fond transparent */}
+{showFilters && (
+  <div className="fixed inset-0 z-50 flex justify-end lg:hidden backdrop-blur-sm bg-black/20 animate-fadeIn">
+    <div className="bg-white w-80 h-full p-6 overflow-y-auto shadow-xl animate-slideIn">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-semibold">Filtres</h2>
+        <button onClick={() => setShowFilters(false)}>
+          <X size={24} />
+        </button>
+      </div>
 
+      <Filters filters={filters} setFilters={setFilters} resetFilters={resetFilters} />
+    </div>
+  </div>
+)}
+
+
+      {/* 🔹 Contenu principal */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar Filters - Desktop */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar Desktop */}
           <div className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-white rounded-lg p-6 shadow-sm sticky top-4">
               <div className="flex items-center justify-between mb-6">
@@ -108,106 +132,11 @@ export default function ListingsPage() {
                   </button>
                 )}
               </div>
-
-              <div className="space-y-6">
-                {/* Destination */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Destination</label>
-                  <Input
-                    type="text"
-                    placeholder="Rechercher..."
-                    value={filters.destination}
-                    onChange={(e) => setFilters({ ...filters, destination: e.target.value })}
-                    className="w-full"
-                  />
-                </div>
-
-                {/* Type de logement */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Type de logement</label>
-                  <select
-                    value={filters.propertyType}
-                    onChange={(e) => setFilters({ ...filters, propertyType: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="">Tous les types</option>
-                    <option value="studio">Studio</option>
-                    <option value="t1">T1</option>
-                    <option value="t2">T2</option>
-                    <option value="villa">Villa</option>
-                    <option value="maison">Maison</option>
-                    <option value="chalet">Chalet</option>
-                    <option value="bungalow">Bungalow</option>
-                    <option value="penthouse">Penthouse</option>
-                    <option value="loft">Loft</option>
-                    <option value="mobile-home">Mobile Home</option>
-                    <option value="gite">Gîte</option>
-                  </select>
-                </div>
-
-                {/* Type de location */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Type de location</label>
-                  <select
-                    value={filters.rentalType}
-                    onChange={(e) => setFilters({ ...filters, rentalType: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="">Tous les types</option>
-                    <option value="saisonniere">Saisonnière</option>
-                    <option value="longue-duree">Longue durée</option>
-                  </select>
-                </div>
-
-                {/* 🎚️ Filtre par prix */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Prix par nuit: {filters.minPrice}€ - {filters.maxPrice}€
-                  </label>
-                  <div className="space-y-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max="5000"
-                      value={filters.minPrice}
-                      onChange={(e) =>
-                        setFilters({ ...filters, minPrice: Number.parseInt(e.target.value) })
-                      }
-                      className="w-full accent-blue-600"
-                    />
-                    <input
-                      type="range"
-                      min="0"
-                      max="5000"
-                      value={filters.maxPrice}
-                      onChange={(e) =>
-                        setFilters({ ...filters, maxPrice: Number.parseInt(e.target.value) })
-                      }
-                      className="w-full accent-blue-600"
-                    />
-                  </div>
-                </div>
-
-                {/* Chambres */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Chambres minimum</label>
-                  <select
-                    value={filters.minBedrooms}
-                    onChange={(e) => setFilters({ ...filters, minBedrooms: Number.parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="0">Toutes</option>
-                    <option value="1">1+</option>
-                    <option value="2">2+</option>
-                    <option value="3">3+</option>
-                    <option value="4">4+</option>
-                  </select>
-                </div>
-              </div>
+              <Filters filters={filters} setFilters={setFilters} resetFilters={resetFilters} />
             </div>
           </div>
 
-          {/* Listings Grid */}
+          {/* Listings */}
           <div className="flex-1">
             {filteredListings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -264,6 +193,109 @@ export default function ListingsPage() {
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+/* === Composant séparé : les filtres réutilisables === */
+function Filters({
+  filters,
+  setFilters,
+  resetFilters,
+}: {
+  filters: any
+  setFilters: (f: any) => void
+  resetFilters: () => void
+}) {
+  return (
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium mb-2">Destination</label>
+        <Input
+          type="text"
+          placeholder="Rechercher..."
+          value={filters.destination}
+          onChange={(e) => setFilters({ ...filters, destination: e.target.value })}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">Type de logement</label>
+        <select
+          value={filters.propertyType}
+          onChange={(e) => setFilters({ ...filters, propertyType: e.target.value })}
+          className="w-full px-3 py-2 border rounded-lg"
+        >
+          <option value="">Tous les types</option>
+          <option value="studio">Studio</option>
+          <option value="t1">T1</option>
+          <option value="t2">T2</option>
+          <option value="villa">Villa</option>
+          <option value="maison">Maison</option>
+          <option value="chalet">Chalet</option>
+          <option value="bungalow">Bungalow</option>
+          <option value="penthouse">Penthouse</option>
+          <option value="loft">Loft</option>
+          <option value="mobile-home">Mobile Home</option>
+          <option value="gite">Gîte</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">Type de location</label>
+        <select
+          value={filters.rentalType}
+          onChange={(e) => setFilters({ ...filters, rentalType: e.target.value })}
+          className="w-full px-3 py-2 border rounded-lg"
+        >
+          <option value="">Tous les types</option>
+          <option value="saisonniere">Saisonnière</option>
+          <option value="longue-duree">Longue durée</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">
+          Prix par nuit: {filters.minPrice}€ - {filters.maxPrice}€
+        </label>
+        <div className="space-y-2">
+          <input
+            type="range"
+            min="0"
+            max="5000"
+            value={filters.minPrice}
+            onChange={(e) => setFilters({ ...filters, minPrice: Number(e.target.value) })}
+            className="w-full accent-blue-600"
+          />
+          <input
+            type="range"
+            min="0"
+            max="5000"
+            value={filters.maxPrice}
+            onChange={(e) => setFilters({ ...filters, maxPrice: Number(e.target.value) })}
+            className="w-full accent-blue-600"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2">Chambres minimum</label>
+        <select
+          value={filters.minBedrooms}
+          onChange={(e) => setFilters({ ...filters, minBedrooms: Number(e.target.value) })}
+          className="w-full px-3 py-2 border rounded-lg"
+        >
+          <option value="0">Toutes</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+        </select>
+      </div>
+
+      <Button onClick={resetFilters} variant="outline" className="w-full">
+        Réinitialiser
+      </Button>
     </div>
   )
 }

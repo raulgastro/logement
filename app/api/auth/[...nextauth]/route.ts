@@ -1,11 +1,11 @@
-import NextAuth from "next-auth"
+// app/api/auth/[...nextauth]/route.ts
+import NextAuth, { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma" // Assure-toi d’avoir le singleton Prisma
 import { compare } from "bcryptjs"
 
-const prisma = new PrismaClient()
-
-export const authOptions = { // ✅ export ajouté ici
+// ✅ Configuration NextAuth avec types
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -24,25 +24,43 @@ export const authOptions = { // ✅ export ajouté ici
         const isValid = await compare(credentials.password, user.password)
         if (!isValid) return null
 
-        return { id: user.id, name: user.name, email: user.email, role: user.role }
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        }
       },
     }),
   ],
+
+  session: {
+    strategy: "jwt",
+    maxAge: 10 * 60, // 10 minutes
+    updateAge: 0,    // pas de renouvellement automatique
+  },
+
+  jwt: {
+    maxAge: 10 * 60,
+  },
+
   callbacks: {
-    async session({ session, token }) {
-      session.user.id = token.sub
-      session.user.role = token.role
-      return session
-    },
     async jwt({ token, user }) {
       if (user) token.role = user.role
       return token
     },
+    async session({ session, token }) {
+      session.user.id = token.sub!
+      session.user.role = token.role as string
+      return session
+    },
   },
+
   pages: {
     signIn: "/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+
+  secret: process.env.NEXTAUTH_SECRET!, // obligatoire en prod
 }
 
 const handler = NextAuth(authOptions)

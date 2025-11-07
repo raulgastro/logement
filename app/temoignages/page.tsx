@@ -156,35 +156,42 @@ export default function TestimonialsPage() {
         </div>
       </div>
 
-      {/* 🤝 Nos partenaires */}
-      <section className="bg-white py-20 border-t border-border">
-        <div className="max-w-6xl mx-auto text-center mb-10">
-          <h2 className="text-3xl font-bold text-foreground mb-4">Nos partenaires</h2>
-          <p className="text-foreground-secondary">
-            Ils nous font confiance pour offrir les meilleures expériences de location.
-          </p>
-        </div>
+      {/* 🤝 Nos partenaires Carousel Infini */}
+<section className="bg-white py-20 border-t border-border">
+  <div className="max-w-6xl mx-auto text-center mb-10">
+    <h2 className="text-3xl font-bold text-foreground mb-4">Nos partenaires</h2>
+    <p className="text-foreground-secondary">
+      Ils nous font confiance pour offrir les meilleures expériences de location.
+    </p>
+  </div>
 
+  <div className="overflow-hidden relative">
+    <motion.div
+      className="flex gap-8 w-max"
+      animate={{ x: ["0%", "-50%"] }}
+      transition={{
+        x: { repeat: Infinity, repeatType: "loop", duration: 50, ease: "linear" },
+      }}
+    >
+      {/* Doublement des logos pour boucle infinie */}
+      {[...partners, ...partners].map((p, i) => (
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="overflow-hidden"
+          key={i}
+          className="flex-shrink-0 h-16 w-32 flex items-center justify-center cursor-pointer"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 1.05 }}
         >
-          <div className="flex items-center justify-around gap-12 animate-scroll">
-            {partners.map((p, i) => (
-              <motion.img
-                key={i}
-                src={p.logo}
-                alt={p.name}
-                className="h-12 grayscale hover:grayscale-0 transition-all duration-300"
-                whileHover={{ scale: 1.1 }}
-              />
-            ))}
-          </div>
+          <img
+            src={p.logo}
+            alt={p.name}
+            className="h-12 grayscale transition-all duration-300 hover:grayscale-0 focus:grayscale-0 active:grayscale-0"
+          />
         </motion.div>
-      </section>
+      ))}
+    </motion.div>
+  </div>
+</section>
+
 
       {/* 🌟 Engagements */}
       <section className="py-20 bg-surface border-t border-border">

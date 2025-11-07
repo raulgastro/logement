@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
+    "target": "ES6",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
     "allowJs": true,
-    "target": "ES6",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -22,10 +22,11 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".", // Racine du projet
     "paths": {
       "@/*": [
-        "./*"
-      ]
+        "*"
+      ] // @/lib/prisma -> lib/prisma.ts
     }
   },
   "include": [
@@ -33,9 +34,11 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
+    "prisma/seed.cjs",
+    "prisma.config.ts.tr",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts"
-, "prisma/seed.cjs", "prisma.config.ts.tr"  ],
+  ],
   "exclude": [
     "node_modules"
   ]
